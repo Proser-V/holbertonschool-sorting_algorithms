@@ -1,48 +1,76 @@
 #include "sort.h"
 
 /**
- * quick_sort - Sort the elements of an array with "quick sort".
- *
- * Description: Select a pivot element from the array and partition the other
- *              elements into two sub-arrays according to whether they are less
- *              than or greater than the pivot.
- *
- * @array: The array to sort.
- * @size: The size of the array to sort.
- *
- * Return: Nothing (void).
+ * lomuto_partition - Partitions the array using Lomuto scheme
+ * @array: The array
+ * @low: Starting index
+ * @high: Ending index (pivot)
+ * @size: Size of the array (for printing)
+ * Return: The pivot index after partition
  */
+int lomuto_partition(int *array, int low, int high, size_t size)
+{
+	int pivot = array[high];
+	int i = low - 1;
+	int j;
+	int temp;
 
+	for (j = low; j < high; j++)
+	{
+		if (array[j] < pivot)
+		{
+			i++;
+			if (i != j)
+			{
+				temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+				print_array(array, size);
+			}
+		}
+	}
+
+	if (array[i + 1] != array[high])
+	{
+		temp = array[i + 1];
+		array[i + 1] = array[high];
+		array[high] = temp;
+		print_array(array, size);
+	}
+
+	return (i + 1);
+}
+
+/**
+ * quick_sort_helper - Recursively sorts sub-arrays
+ * @array: The array
+ * @low: Starting index of sub-array
+ * @high: Ending index of sub-array (pivot)
+ * @size: Total size of the array (for printing)
+ * Return: nothing (void)
+ */
+void quick_sort_helper(int *array, int low, int high, size_t size)
+{
+	int pivot_index;
+
+	if (low < high)
+	{
+		pivot_index = lomuto_partition(array, low, high, size);
+		quick_sort_helper(array, low, pivot_index - 1, size);
+		quick_sort_helper(array, pivot_index + 1, high, size);
+	}
+}
+
+/**
+ * quick_sort - Sorts an array of integers using Quick Sort algorithm
+ * @array: The array to sort
+ * @size: Size of the array
+ * Return: nothing (void)
+ */
 void quick_sort(int *array, size_t size)
 {
-	size_t index1, index2, pvt;
-	int temp, p_swap;
-
 	if (array == NULL || size < 2)
 		return;
 
-	pvt = size - 1;
-	while (pvt != 0)
-	{
-		for (index1 = 0, index2 = 0; index1 <= pvt; index2++, index1++)
-		{
-			index2 = index1;
-			p_swap = 0;
-			if (array[index1] >= array[pvt])
-			{
-				while (array[index2] > array[pvt] && index2 < pvt)
-					index2++;
-
-				temp = array[index1];
-				if (temp == array[pvt])
-					p_swap = 1;
-				array[index1] = array[index2];
-				array[index2] = temp;
-				if (p_swap == 0)
-					print_array(array, size);
-			}
-		}
-		if (p_swap == 1)
-			pvt--;
-	}
+	quick_sort_helper(array, 0, size - 1, size);
 }
