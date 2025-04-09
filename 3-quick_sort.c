@@ -15,30 +15,34 @@
 
 void quick_sort(int *array, size_t size)
 {
-	size_t index1, index2, pivot;
-	int temp;
+	size_t index1, index2, pvt;
+	int temp, p_swap;
 
 	if (array == NULL || size < 2)
 		return;
 
-	pivot = size - 1;
-
-	for (index1 = 0; index1 < pivot;)
+	pvt = size - 1;
+	while (pvt != 0)
 	{
-		for (index2 = index1; index2 < pivot; index2++)
+		for (index1 = 0, index2 = 0; index1 <= pvt; index2++, index1++)
 		{
-			if (array[index2] <= array[pivot])
+			index2 = index1;
+			p_swap = 0;
+			if (array[index1] >= array[pvt])
 			{
+				while (array[index2] > array[pvt] && index2 < pvt)
+					index2++;
+
 				temp = array[index1];
+				if (temp == array[pvt])
+					p_swap = 1;
 				array[index1] = array[index2];
 				array[index2] = temp;
-				index1++;
-				print_array(array, size);
+				if (p_swap == 0)
+					print_array(array, size);
 			}
 		}
-		temp = array[index1];
-		array[index1] = array[pivot];
-		array[pivot] = temp;
-		index1++;
+		if (p_swap == 1)
+			pvt--;
 	}
 }
